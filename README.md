@@ -53,6 +53,8 @@ python scripts/04_bayes_opt.py 30                 # Bayesian (Optuna TPE) tuning
 python scripts/05_hmm_eval.py                     # decoder tuning + classifier-only vs classifier+HMM
 python scripts/06_folium_maps.py                  # interactive maps -> results/maps/
 python scripts/07_make_figures.py                 # model-comparison plots
+python scripts/08_static_route_plots.py           # static route plots (classifier-only vs HMM) -> results/figures/
+python scripts/09_training_curves.py              # MLP / HistGradientBoosting training histories -> results/figures/training_curves.png
 ```
 
 Random seed is fixed at 42 everywhere. Results are written to `results/`, and every number in the report comes from those files.
