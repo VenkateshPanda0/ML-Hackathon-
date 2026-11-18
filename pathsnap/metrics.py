@@ -43,6 +43,16 @@ def continuity(arc_seq, arcs):
     return float(np.mean(ok))
 
 
+def route_continuity(route, arcs):
+    """Share of consecutive arcs in the FINAL returned route that are physically adjacent
+    (to_node of one arc == from_node of the next). Unlike `continuity`, which looks at the raw
+    per-observation picks, this measures the stitched route the API actually returns."""
+    route = list(map(int, route))
+    if len(route) < 2:
+        return 1.0
+    return float(np.mean([arcs[route[i], 1] == arcs[route[i + 1], 0] for i in range(len(route) - 1)]))
+
+
 def route_metrics(pred, true, arc_len):
     cp, ct = Counter(map(int, pred)), Counter(map(int, true))
     L = lambda c: sum(arc_len[a] * n for a, n in c.items())

@@ -20,13 +20,13 @@ from sklearn.model_selection import GroupKFold
 
 from pathsnap.features import FEATURES, TripContext, build_candidates
 from pathsnap.io import list_trips, load_trip
-from pathsnap.metrics import candidate_metrics, continuity, pointwise_accuracy, route_metrics, top1_accuracy
+from pathsnap.metrics import candidate_metrics, continuity, pointwise_accuracy, route_continuity, route_metrics, top1_accuracy
 from pathsnap.models import SEED
 from pathsnap import hmm
 
 N_TRIALS = int(sys.argv[1]) if len(sys.argv) > 1 else 30
-tr = pd.read_csv("results/features_train.csv.gz", dtype={"trip": str})
-te = pd.read_csv("results/features_student_test.csv.gz", dtype={"trip": str})
+tr = pd.read_csv("results/features_train.csv", dtype={"trip": str})
+te = pd.read_csv("results/features_student_test.csv", dtype={"trip": str})
 X, y, g = tr[FEATURES].to_numpy(), tr["label"].to_numpy(), tr["trip"].to_numpy()
 Xte, yte = te[FEATURES].to_numpy(), te["label"].to_numpy()
 folds = list(GroupKFold(n_splits=3).split(X, y, g))
@@ -108,15 +108,15 @@ for name, params in [("HGB untuned", UNTUNED), ("HGB tuned (Bayesian)", best)]:
     t0 = time.time(); m = make(params).fit(X, y); fit_t = time.time() - t0
     t0 = time.time(); p = m.predict_proba(Xte)[:, 1]; inf_t = time.time() - t0
     r = candidate_metrics(yte, p)
-    rf, cont, pw, dec_t = [], [], [], 0
+    rf, cont, rcont, pw, dec_t = [], [], [], [], 0
     for ctx, cand, ref in test_trips:
         pp = m.predict_proba(cand[FEATURES].to_numpy())[:, 1]
         t1 = time.time(); oa, route, _ = hmm.decode(ctx, cand, pp); dec_t += time.time() - t1
         rf.append(route_metrics(route, ctx.trip.route, ctx.trip.arc_len)["route_f1"])
-        cont.append(continuity(oa, ctx.trip.arcs)); pw.append(pointwise_accuracy(oa, ref[cand.obs.unique()]))
+        cont.append(continuity(oa, ctx.trip.arcs)); rcont.append(route_continuity(route, ctx.trip.arcs)); pw.append(pointwise_accuracy(oa, ref[cand.obs.unique()]))
     rows.append(dict(model=name, cv_log_loss=ll, cv_macro_f1=f1, cv_top1=top, test_top1=top1_accuracy(te, p),
                      test_macro_f1=r["macro_f1"], test_log_loss=r["log_loss"], hmm_route_f1=np.mean(rf),
-                     hmm_continuity=np.mean(cont), hmm_pointwise_acc=np.mean(pw), fit_time_s=fit_t,
+                     hmm_observation_continuity=np.mean(cont), hmm_continuity=np.mean(rcont), hmm_pointwise_acc=np.mean(pw), fit_time_s=fit_t,
                      inference_s_test_candidates=inf_t, hmm_decode_s_10_trips=dec_t))
     if "tuned" in name and "untuned" not in name:
         os.makedirs("artifacts", exist_ok=True)

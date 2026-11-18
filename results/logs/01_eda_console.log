@@ -1,4 +1,4 @@
-train 00000001
+﻿train 00000001
 train 00000002
 train 00000003
 train 00000004
@@ -88,9 +88,9 @@ student_test 00000065
 student_test 00000076
 student_test 00000077
 student_test 00000091
-              gps_points  missing_values  ...  pct_1s_steps  gps_to_route_median_m
-split                                     ...                                     
-student_test   1916.0000             0.0  ...     98.198969               5.146914
-train          2605.2125             0.0  ...     93.829610               8.096884
+              gps_points  ...  gps_to_route_median_m
+split                     ...                       
+student_test   1916.0000  ...               5.146914
+train          2605.2125  ...               8.096884
 
 [2 rows x 5 columns]

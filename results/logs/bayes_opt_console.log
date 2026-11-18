@@ -1,0 +1,142 @@
+﻿python.exe : [I 2026-11-18 15:58:08,045] A new study created in memory with name: pathsnap_hgb
+At line:3 char:28
++ ... ASTEXITCODE -eq 0) { & $py -u scripts/04_bayes_opt.py 30 2>&1 | Tee-O ...
++                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([I 2026-11-18 1...e: pathsnap_hgb:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+trial 0: logloss=0.0831 macroF1=0.9491 top1=0.9154
+[I 2026-11-18 15:58:12,596] Trial 0 finished with value: 0.08312176936947241 and parameters: {'learning_rate': 0.1, 
+'max_iter': 200, 'max_leaf_nodes': 31, 'min_samples_leaf': 20, 'l2_regularization': 0.0001, 'max_features': 1.0}. Best 
+is trial 0 with value: 0.08312176936947241.
+trial 1: logloss=0.0833 macroF1=0.9493 top1=0.9155
+[I 2026-11-18 15:58:39,891] Trial 1 finished with value: 0.08332178158796742 and parameters: {'learning_rate': 
+0.03574712922600244, 'max_iter': 576, 'max_leaf_nodes': 97, 'min_samples_leaf': 184, 'l2_regularization': 
+0.0006026889128682511, 'max_features': 0.5779972601681014}. Best is trial 0 with value: 0.08312176936947241.
+trial 2: logloss=0.0818 macroF1=0.9497 top1=0.9155
+[I 2026-11-18 15:59:49,101] Trial 2 finished with value: 0.08178861520534718 and parameters: {'learning_rate': 
+0.012184186502221764, 'max_iter': 533, 'max_leaf_nodes': 82, 'min_samples_leaf': 216, 'l2_regularization': 
+0.00012674255898937226, 'max_features': 0.9849549260809971}. Best is trial 2 with value: 0.08178861520534718.
+trial 3: logloss=0.0839 macroF1=0.9490 top1=0.9147
+[I 2026-11-18 15:59:53,873] Trial 3 finished with value: 0.08387292895812996 and parameters: {'learning_rate': 
+0.16967533607196555, 'max_iter': 206, 'max_leaf_nodes': 35, 'min_samples_leaf': 63, 'l2_regularization': 
+0.0033205591037519565, 'max_features': 0.762378215816119}. Best is trial 2 with value: 0.08178861520534718.
+trial 4: logloss=0.0824 macroF1=0.9492 top1=0.9150
+[I 2026-11-18 16:00:36,565] Trial 4 finished with value: 0.08235468989565488 and parameters: {'learning_rate': 
+0.04345454109729477, 'max_iter': 245, 'max_leaf_nodes': 84, 'min_samples_leaf': 50, 'l2_regularization': 
+0.0028888383623653178, 'max_features': 0.6831809216468459}. Best is trial 2 with value: 0.08178861520534718.
+trial 5: logloss=0.0827 macroF1=0.9492 top1=0.9154
+[I 2026-11-18 16:01:40,937] Trial 5 finished with value: 0.08267790340804902 and parameters: {'learning_rate': 
+0.04717052037625178, 'max_iter': 493, 'max_leaf_nodes': 37, 'min_samples_leaf': 159, 'l2_regularization': 
+0.09163741808778776, 'max_features': 0.5232252063599989}. Best is trial 2 with value: 0.08178861520534718.
+trial 6: logloss=0.0823 macroF1=0.9496 top1=0.9152
+[I 2026-11-18 16:02:04,230] Trial 6 finished with value: 0.08233806039291197 and parameters: {'learning_rate': 
+0.07896186801026692, 'max_iter': 185, 'max_leaf_nodes': 22, 'min_samples_leaf': 286, 'l2_regularization': 
+6.732248920775331, 'max_features': 0.9041986740582306}. Best is trial 2 with value: 0.08178861520534718.
+trial 7: logloss=0.0827 macroF1=0.9502 top1=0.9157
+[I 2026-11-18 16:02:35,746] Trial 7 finished with value: 0.08265446052687812 and parameters: {'learning_rate': 
+0.028180680291847244, 'max_iter': 148, 'max_leaf_nodes': 92, 'min_samples_leaf': 138, 'l2_regularization': 
+0.0004075596440072873, 'max_features': 0.7475884550556351}. Best is trial 2 with value: 0.08178861520534718.
+trial 8: logloss=0.0815 macroF1=0.9500 top1=0.9160
+[I 2026-11-18 16:04:02,678] Trial 8 finished with value: 0.08153872666510231 and parameters: {'learning_rate': 
+0.011240768803005551, 'max_iter': 555, 'max_leaf_nodes': 44, 'min_samples_leaf': 202, 'l2_regularization': 
+0.003618723330959626, 'max_features': 0.7600340105889054}. Best is trial 8 with value: 0.08153872666510231.
+trial 9: logloss=0.0829 macroF1=0.9492 top1=0.9153
+[I 2026-11-18 16:04:49,898] Trial 9 finished with value: 0.08286569772908599 and parameters: {'learning_rate': 
+0.06420330336297862, 'max_iter': 192, 'max_leaf_nodes': 124, 'min_samples_leaf': 235, 'l2_regularization': 
+4.9830438374949075, 'max_features': 0.9474136752138245}. Best is trial 8 with value: 0.08153872666510231.
+trial 10: logloss=0.0824 macroF1=0.9499 top1=0.9153
+[I 2026-11-18 16:05:50,440] Trial 10 finished with value: 0.08243499584947528 and parameters: {'learning_rate': 
+0.013773977335445541, 'max_iter': 551, 'max_leaf_nodes': 15, 'min_samples_leaf': 54, 'l2_regularization': 
+0.00022280871676113635, 'max_features': 0.9279487704026307}. Best is trial 8 with value: 0.08153872666510231.
+trial 11: logloss=0.0830 macroF1=0.9492 top1=0.9149
+[I 2026-11-18 16:07:47,291] Trial 11 finished with value: 0.08301737599715321 and parameters: {'learning_rate': 
+0.021594154863220496, 'max_iter': 574, 'max_leaf_nodes': 97, 'min_samples_leaf': 192, 'l2_regularization': 
+0.0001022750635982678, 'max_features': 0.9815903496739635}. Best is trial 8 with value: 0.08153872666510231.
+trial 12: logloss=0.0816 macroF1=0.9499 top1=0.9159
+[I 2026-11-18 16:08:55,176] Trial 12 finished with value: 0.08162081635834252 and parameters: {'learning_rate': 
+0.015051452686176827, 'max_iter': 467, 'max_leaf_nodes': 38, 'min_samples_leaf': 187, 'l2_regularization': 
+0.0002964649527587892, 'max_features': 0.826907614270741}. Best is trial 8 with value: 0.08153872666510231.
+trial 13: logloss=0.0818 macroF1=0.9497 top1=0.9155
+[I 2026-11-18 16:09:52,491] Trial 13 finished with value: 0.08181104777450178 and parameters: {'learning_rate': 
+0.017051061794179076, 'max_iter': 584, 'max_leaf_nodes': 42, 'min_samples_leaf': 146, 'l2_regularization': 
+0.017006908227068733, 'max_features': 0.8015219398492086}. Best is trial 8 with value: 0.08153872666510231.
+trial 14: logloss=0.0820 macroF1=0.9495 top1=0.9154
+[I 2026-11-18 16:10:15,093] Trial 14 finished with value: 0.0820264212538452 and parameters: {'learning_rate': 
+0.02134485746203193, 'max_iter': 468, 'max_leaf_nodes': 46, 'min_samples_leaf': 205, 'l2_regularization': 
+0.004403064588644913, 'max_features': 0.9341267009731918}. Best is trial 8 with value: 0.08153872666510231.
+trial 15: logloss=0.0820 macroF1=0.9499 top1=0.9156
+[I 2026-11-18 16:10:35,929] Trial 15 finished with value: 0.082004634899605 and parameters: {'learning_rate': 
+0.015012575600483719, 'max_iter': 509, 'max_leaf_nodes': 20, 'min_samples_leaf': 248, 'l2_regularization': 
+0.0003117591612075179, 'max_features': 0.7437461010684274}. Best is trial 8 with value: 0.08153872666510231.
+trial 16: logloss=0.0817 macroF1=0.9498 top1=0.9156
+[I 2026-11-18 16:11:03,197] Trial 16 finished with value: 0.08165047046133528 and parameters: {'learning_rate': 
+0.014085360931911005, 'max_iter': 575, 'max_leaf_nodes': 40, 'min_samples_leaf': 250, 'l2_regularization': 
+0.011392534344473711, 'max_features': 0.7624638459029573}. Best is trial 8 with value: 0.08153872666510231.
+trial 17: logloss=0.0814 macroF1=0.9500 top1=0.9160
+[I 2026-11-18 16:11:31,396] Trial 17 finished with value: 0.08142139960550894 and parameters: {'learning_rate': 
+0.012877153369388265, 'max_iter': 522, 'max_leaf_nodes': 63, 'min_samples_leaf': 221, 'l2_regularization': 
+0.0011935391902677367, 'max_features': 0.6592363390249283}. Best is trial 17 with value: 0.08142139960550894.
+trial 18: logloss=0.0831 macroF1=0.9491 top1=0.9150
+[I 2026-11-18 16:11:59,458] Trial 18 finished with value: 0.08314695053627218 and parameters: {'learning_rate': 
+0.034976222614240625, 'max_iter': 582, 'max_leaf_nodes': 60, 'min_samples_leaf': 182, 'l2_regularization': 
+0.0005851469888197044, 'max_features': 0.6790711078630858}. Best is trial 17 with value: 0.08142139960550894.
+trial 19: logloss=0.0814 macroF1=0.9500 top1=0.9159
+[I 2026-11-18 16:12:28,024] Trial 19 finished with value: 0.081392691536654 and parameters: {'learning_rate': 
+0.01324993722264902, 'max_iter': 506, 'max_leaf_nodes': 70, 'min_samples_leaf': 160, 'l2_regularization': 
+0.018247409310971935, 'max_features': 0.6298816653162411}. Best is trial 19 with value: 0.081392691536654.
+trial 20: logloss=0.0816 macroF1=0.9499 top1=0.9159
+[I 2026-11-18 16:12:57,436] Trial 20 finished with value: 0.08155836560166128 and parameters: {'learning_rate': 
+0.016326448444852915, 'max_iter': 512, 'max_leaf_nodes': 75, 'min_samples_leaf': 259, 'l2_regularization': 
+0.00015817787027539994, 'max_features': 0.5491204315920746}. Best is trial 19 with value: 0.081392691536654.
+trial 21: logloss=0.0813 macroF1=0.9501 top1=0.9159
+[I 2026-11-18 16:13:26,854] Trial 21 finished with value: 0.081250143199067 and parameters: {'learning_rate': 
+0.012565511398413836, 'max_iter': 541, 'max_leaf_nodes': 59, 'min_samples_leaf': 177, 'l2_regularization': 
+0.020385994856245444, 'max_features': 0.5398931230929961}. Best is trial 21 with value: 0.081250143199067.
+trial 22: logloss=0.0814 macroF1=0.9499 top1=0.9159
+[I 2026-11-18 16:13:57,976] Trial 22 finished with value: 0.08144403353904871 and parameters: {'learning_rate': 
+0.012693689124107243, 'max_iter': 549, 'max_leaf_nodes': 68, 'min_samples_leaf': 186, 'l2_regularization': 
+0.025835897204763692, 'max_features': 0.660037674603995}. Best is trial 21 with value: 0.081250143199067.
+trial 23: logloss=0.0821 macroF1=0.9501 top1=0.9160
+[I 2026-11-18 16:14:23,434] Trial 23 finished with value: 0.08209441187680912 and parameters: {'learning_rate': 
+0.010399110687520426, 'max_iter': 434, 'max_leaf_nodes': 71, 'min_samples_leaf': 157, 'l2_regularization': 
+0.005625955830193607, 'max_features': 0.6100400107302514}. Best is trial 21 with value: 0.081250143199067.
+trial 24: logloss=0.0816 macroF1=0.9502 top1=0.9160
+[I 2026-11-18 16:14:47,759] Trial 24 finished with value: 0.08157685408426758 and parameters: {'learning_rate': 
+0.011800399460762372, 'max_iter': 463, 'max_leaf_nodes': 47, 'min_samples_leaf': 151, 'l2_regularization': 
+0.03800613621018206, 'max_features': 0.6169775275447279}. Best is trial 21 with value: 0.081250143199067.
+trial 25: logloss=0.0823 macroF1=0.9495 top1=0.9153
+[I 2026-11-18 16:15:16,563] Trial 25 finished with value: 0.08232048801481708 and parameters: {'learning_rate': 
+0.027590440072544, 'max_iter': 543, 'max_leaf_nodes': 70, 'min_samples_leaf': 163, 'l2_regularization': 
+0.0056066394060364025, 'max_features': 0.51757933477655}. Best is trial 21 with value: 0.081250143199067.
+trial 26: logloss=0.0815 macroF1=0.9499 top1=0.9160
+[I 2026-11-18 16:15:46,069] Trial 26 finished with value: 0.08148652004943868 and parameters: {'learning_rate': 
+0.013979779442278541, 'max_iter': 588, 'max_leaf_nodes': 41, 'min_samples_leaf': 119, 'l2_regularization': 
+0.01632161970448717, 'max_features': 0.5733339829068731}. Best is trial 21 with value: 0.081250143199067.
+trial 27: logloss=0.0815 macroF1=0.9499 top1=0.9160
+[I 2026-11-18 16:16:14,367] Trial 27 finished with value: 0.08148171958179362 and parameters: {'learning_rate': 
+0.015321157987181122, 'max_iter': 545, 'max_leaf_nodes': 48, 'min_samples_leaf': 127, 'l2_regularization': 
+0.0010941309478526547, 'max_features': 0.6123519502158529}. Best is trial 21 with value: 0.081250143199067.
+trial 28: logloss=0.0815 macroF1=0.9498 top1=0.9160
+[I 2026-11-18 16:16:46,402] Trial 28 finished with value: 0.08146189319545623 and parameters: {'learning_rate': 
+0.012661518329765626, 'max_iter': 549, 'max_leaf_nodes': 67, 'min_samples_leaf': 211, 'l2_regularization': 
+0.0005606654771957338, 'max_features': 0.6973925531118529}. Best is trial 21 with value: 0.081250143199067.
+trial 29: logloss=0.0823 macroF1=0.9495 top1=0.9151
+[I 2026-11-18 16:17:17,973] Trial 29 finished with value: 0.08231442752599578 and parameters: {'learning_rate': 
+0.022734927656957032, 'max_iter': 576, 'max_leaf_nodes': 69, 'min_samples_leaf': 198, 'l2_regularization': 
+0.0851129088914957, 'max_features': 0.5958844721264319}. Best is trial 21 with value: 0.081250143199067.
+                                       0                     1
+model                        HGB untuned  HGB tuned (Bayesian)
+cv_log_loss                     0.083601               0.08125
+cv_macro_f1                     0.949179              0.950102
+cv_top1                         0.915231              0.915894
+test_top1                        0.92554              0.928183
+test_macro_f1                   0.951038              0.951964
+test_log_loss                   0.081256              0.077398
+hmm_route_f1                    0.973244              0.973275
+hmm_observation_continuity      0.878272              0.877731
+hmm_continuity                  0.997057               0.99707
+hmm_pointwise_acc               0.960476              0.960856
+fit_time_s                      1.736108             12.488724
+inference_s_test_candidates     0.033275              0.303862
+hmm_decode_s_10_trips           2.980836              3.102039

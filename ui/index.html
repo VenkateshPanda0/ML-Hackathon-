@@ -65,7 +65,8 @@ $('connect').onclick = async () => {
 
 const LABELS = {route_precision: 'Route precision (length)', route_recall: 'Route recall (length)',
   route_f1: 'Route F1 (length)', route_mismatch: 'Route mismatch fraction', exact_match: 'Exact route match',
-  continuity: 'Route continuity', pointwise_accuracy: 'Observation-level accuracy'};
+  continuity: 'Route continuity (connected route)', observation_continuity: 'Observation-level continuity',
+  pointwise_accuracy: 'Observation-level accuracy'};
 
 $('run').onclick = async () => {
   $('run').disabled = true; status('Running prediction for trip ' + selected + '...');

@@ -21,7 +21,7 @@ from sklearn.model_selection import GroupKFold
 from pathsnap import hmm
 from pathsnap.features import CFG, FEATURES, TripContext, build_candidates
 from pathsnap.io import list_trips, load_trip
-from pathsnap.metrics import continuity, pointwise_accuracy, route_metrics
+from pathsnap.metrics import continuity, pointwise_accuracy, route_continuity, route_metrics
 
 model = joblib.load("artifacts/final_model.joblib")
 
@@ -29,7 +29,7 @@ model = joblib.load("artifacts/final_model.joblib")
 train_ids = list_trips("data/train")
 rng = np.random.default_rng(42)
 tune_ids = sorted(rng.choice(train_ids, 25, replace=False))
-tr = pd.read_csv("results/features_train.csv.gz", dtype={"trip": str})
+tr = pd.read_csv("results/features_train.csv", dtype={"trip": str})
 X, y, g = tr[FEATURES].to_numpy(), tr["label"].to_numpy(), tr["trip"].to_numpy()
 oof = np.zeros(len(tr))
 for a, b in GroupKFold(5).split(X, y, g):
@@ -72,14 +72,15 @@ for tid in list_trips("data/student_test"):
         oa, route, _ = fn(ctx, cand, p, decoder)
         r[f"{mode}_time_s"] = time.time() - t0
         r[f"{mode}_pointwise_acc"] = pointwise_accuracy(oa, ref_obs)
-        r[f"{mode}_continuity"] = continuity(oa, ctx.trip.arcs)
+        r[f"{mode}_observation_continuity"] = continuity(oa, ctx.trip.arcs)
+        r[f"{mode}_continuity"] = route_continuity(route, ctx.trip.arcs)  # final-route connectivity
         r.update({f"{mode}_{k}": v for k, v in route_metrics(route, ctx.trip.route, ctx.trip.arc_len).items()})
     out.append(r)
     print(tid, round(r["classifier_only_route_f1"], 3), "->", round(r["classifier_hmm_route_f1"], 3), flush=True)
 df = pd.DataFrame(out)
 df.to_csv("results/hmm_vs_classifier_by_trip.csv", index=False)
 summ = pd.DataFrame({m: {k: df[f"{m}_{k}"].mean() for k in
-                         ["pointwise_acc", "continuity", "route_precision", "route_recall", "route_f1",
+                         ["pointwise_acc", "continuity", "observation_continuity", "route_precision", "route_recall", "route_f1",
                           "route_mismatch", "exact_match", "time_s"]}
                      for m in ["classifier_only", "classifier_hmm"]})
 summ.to_csv("results/hmm_vs_classifier_summary.csv")

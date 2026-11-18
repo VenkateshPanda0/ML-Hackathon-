@@ -1,0 +1,51 @@
+﻿=== LogisticRegression
+  fold 0: macroF1=0.9400 top1=0.9212 logloss=0.1019
+  fold 1: macroF1=0.9480 top1=0.9290 logloss=0.1077
+  fold 2: macroF1=0.9396 top1=0.9148 logloss=0.1137
+  fold 3: macroF1=0.9199 top1=0.8797 logloss=0.1317
+  fold 4: macroF1=0.9386 top1=0.8888 logloss=0.1172
+{'model': 'LogisticRegression', 'family': 'Linear / probabilistic', 'config': 'StandardScaler, L2, C=1.0', 'cv_macro_f1': np.float64(0.9372), 'cv_macro_f1_std': np.float64(0.0104), 'cv_top1': np.float64(0.9067), 'cv_log_loss': np.float64(0.1144), 'train_macro_f1': 0.9383, 'train_top1': 0.9069, 'test_accuracy': 0.9642, 'test_precision': 0.8966, 'test_recall': 0.9044, 'test_f1': 0.9005, 'test_macro_f1': 0.9393, 'test_log_loss': 0.1122, 'test_top1': 0.9155, 'clf_only_continuity': np.float64(0.9504), 'hmm_continuity': np.float64(0.9971), 'clf_only_observation_continuity': np.float64(0.7272), 'hmm_observation_continuity': np.float64(0.8653), 'clf_only_route_f1': np.float64(0.9245), 'hmm_route_f1': np.float64(0.9731), 'hmm_pointwise_acc': np.float64(0.954), 'fit_time_s': 0.956, 'inference_ms_per_1k_candidates': 0.1493}
+=== GaussianNB
+  fold 0: macroF1=0.8821 top1=0.9119 logloss=0.3577
+  fold 1: macroF1=0.9059 top1=0.9208 logloss=0.3873
+  fold 2: macroF1=0.8920 top1=0.9096 logloss=0.4027
+  fold 3: macroF1=0.8775 top1=0.8680 logloss=0.4929
+  fold 4: macroF1=0.8972 top1=0.8867 logloss=0.4060
+{'model': 'GaussianNB', 'family': 'Probabilistic (generative)', 'config': 'var_smoothing=1e-9', 'cv_macro_f1': np.float64(0.891), 'cv_macro_f1_std': np.float64(0.0114), 'cv_top1': np.float64(0.8994), 'cv_log_loss': np.float64(0.4093), 'train_macro_f1': 0.8915, 'train_top1': 0.8998, 'test_accuracy': 0.9319, 'test_precision': 0.748, 'test_recall': 0.935, 'test_f1': 0.8311, 'test_macro_f1': 0.8942, 'test_log_loss': 0.3959, 'test_top1': 0.91, 'clf_only_continuity': np.float64(0.9385), 'hmm_continuity': np.float64(0.9958), 'clf_only_observation_continuity': np.float64(0.6986), 'hmm_observation_continuity': np.float64(0.8507), 'clf_only_route_f1': np.float64(0.9035), 'hmm_route_f1': np.float64(0.9678), 'hmm_pointwise_acc': np.float64(0.9375), 'fit_time_s': 0.1294, 'inference_ms_per_1k_candidates': 0.129}
+=== KNN
+  fold 0: macroF1=0.9451 top1=0.9192 logloss=0.1206
+  fold 1: macroF1=0.9532 top1=0.9283 logloss=0.1409
+  fold 2: macroF1=0.9442 top1=0.9168 logloss=0.1342
+  fold 3: macroF1=0.9230 top1=0.8752 logloss=0.1707
+  fold 4: macroF1=0.9439 top1=0.8927 logloss=0.1419
+{'model': 'KNN', 'family': 'Instance-based', 'config': 'StandardScaler, k=25, distance-weighted, 150k-row subsample', 'cv_macro_f1': np.float64(0.9419), 'cv_macro_f1_std': np.float64(0.0112), 'cv_top1': np.float64(0.9064), 'cv_log_loss': np.float64(0.1417), 'train_macro_f1': 0.9575, 'train_top1': 0.9334, 'test_accuracy': 0.9678, 'test_precision': 0.9065, 'test_recall': 0.9145, 'test_f1': 0.9105, 'test_macro_f1': 0.9454, 'test_log_loss': 0.1304, 'test_top1': 0.9209, 'clf_only_continuity': np.float64(0.9487), 'hmm_continuity': np.float64(0.9971), 'clf_only_observation_continuity': np.float64(0.7372), 'hmm_observation_continuity': np.float64(0.8735), 'clf_only_route_f1': np.float64(0.917), 'hmm_route_f1': np.float64(0.9739), 'hmm_pointwise_acc': np.float64(0.9564), 'fit_time_s': 0.2838, 'inference_ms_per_1k_candidates': 243.5039}
+=== RandomForest
+  fold 0: macroF1=0.9535 top1=0.9301 logloss=0.0699
+  fold 1: macroF1=0.9601 top1=0.9372 logloss=0.0739
+  fold 2: macroF1=0.9520 top1=0.9248 logloss=0.0796
+  fold 3: macroF1=0.9366 top1=0.8875 logloss=0.0967
+  fold 4: macroF1=0.9523 top1=0.8974 logloss=0.0858
+{'model': 'RandomForest', 'family': 'Ensemble (bagging)', 'config': '150 trees, max_depth=14, min_leaf=5, max_samples=0.3', 'cv_macro_f1': np.float64(0.9509), 'cv_macro_f1_std': np.float64(0.0087), 'cv_top1': np.float64(0.9154), 'cv_log_loss': np.float64(0.0812), 'train_macro_f1': 0.9575, 'train_top1': 0.9246, 'test_accuracy': 0.9721, 'test_precision': 0.9204, 'test_recall': 0.9242, 'test_f1': 0.9223, 'test_macro_f1': 0.9526, 'test_log_loss': 0.078, 'test_top1': 0.9271, 'clf_only_continuity': np.float64(0.9515), 'hmm_continuity': np.float64(0.9971), 'clf_only_observation_continuity': np.float64(0.748), 'hmm_observation_continuity': np.float64(0.8763), 'clf_only_route_f1': np.float64(0.9233), 'hmm_route_f1': np.float64(0.9733), 'hmm_pointwise_acc': np.float64(0.9603), 'fit_time_s': 37.2555, 'inference_ms_per_1k_candidates': 4.1921}
+=== HistGradientBoosting
+  fold 0: macroF1=0.9534 top1=0.9292 logloss=0.0721
+  fold 1: macroF1=0.9599 top1=0.9370 logloss=0.0753
+  fold 2: macroF1=0.9514 top1=0.9245 logloss=0.0811
+  fold 3: macroF1=0.9374 top1=0.8884 logloss=0.0963
+  fold 4: macroF1=0.9496 top1=0.8943 logloss=0.0900
+{'model': 'HistGradientBoosting', 'family': 'Boosting', 'config': 'lr=0.1, 200 iters, 31 leaves', 'cv_macro_f1': np.float64(0.9503), 'cv_macro_f1_std': np.float64(0.0082), 'cv_top1': np.float64(0.9147), 'cv_log_loss': np.float64(0.083), 'train_macro_f1': 0.9535, 'train_top1': 0.9187, 'test_accuracy': 0.971, 'test_precision': 0.9127, 'test_recall': 0.9269, 'test_f1': 0.9198, 'test_macro_f1': 0.951, 'test_log_loss': 0.0813, 'test_top1': 0.9255, 'clf_only_continuity': np.float64(0.9493), 'hmm_continuity': np.float64(0.9971), 'clf_only_observation_continuity': np.float64(0.7499), 'hmm_observation_continuity': np.float64(0.8783), 'clf_only_route_f1': np.float64(0.9212), 'hmm_route_f1': np.float64(0.9732), 'hmm_pointwise_acc': np.float64(0.9605), 'fit_time_s': 4.6635, 'inference_ms_per_1k_candidates': 1.4733}
+=== MLP
+  fold 0: macroF1=0.9514 top1=0.9312 logloss=0.0738
+  fold 1: macroF1=0.9585 top1=0.9374 logloss=0.0806
+  fold 2: macroF1=0.9495 top1=0.9216 logloss=0.0837
+  fold 3: macroF1=0.9326 top1=0.8858 logloss=0.1023
+  fold 4: macroF1=0.9489 top1=0.8959 logloss=0.0907
+{'model': 'MLP', 'family': 'Neural network', 'config': 'StandardScaler, (64,32) ReLU, Adam, early stopping, 250k-row subsample', 'cv_macro_f1': np.float64(0.9482), 'cv_macro_f1_std': np.float64(0.0095), 'cv_top1': np.float64(0.9144), 'cv_log_loss': np.float64(0.0862), 'train_macro_f1': 0.9514, 'train_top1': 0.9173, 'test_accuracy': 0.9707, 'test_precision': 0.9132, 'test_recall': 0.9244, 'test_f1': 0.9188, 'test_macro_f1': 0.9504, 'test_log_loss': 0.0821, 'test_top1': 0.9267, 'clf_only_continuity': np.float64(0.9538), 'hmm_continuity': np.float64(0.9971), 'clf_only_observation_continuity': np.float64(0.7556), 'hmm_observation_continuity': np.float64(0.8734), 'clf_only_route_f1': np.float64(0.9297), 'hmm_route_f1': np.float64(0.9732), 'hmm_pointwise_acc': np.float64(0.959), 'fit_time_s': 15.4818, 'inference_ms_per_1k_candidates': 0.439}
+                  model  cv_macro_f1  ...  test_log_loss  hmm_route_f1
+0    LogisticRegression     0.937235  ...       0.112240      0.973112
+1            GaussianNB     0.890957  ...       0.395884      0.967767
+2                   KNN     0.941890  ...       0.130369      0.973934
+3          RandomForest     0.950894  ...       0.077961      0.973281
+4  HistGradientBoosting     0.950334  ...       0.081256      0.973244
+5                   MLP     0.948164  ...       0.082102      0.973171
+
+[6 rows x 7 columns]

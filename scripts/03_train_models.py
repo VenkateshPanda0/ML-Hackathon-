@@ -19,7 +19,7 @@ from sklearn.model_selection import GroupKFold
 from pathsnap.features import FEATURES, TripContext, build_candidates
 from pathsnap.io import list_trips, load_trip
 from pathsnap.metrics import (candidate_metrics, candidate_miss_rate, continuity, pointwise_accuracy,
-                              route_metrics, top1_accuracy)
+                              route_continuity, route_metrics, top1_accuracy)
 from pathsnap.models import MODEL_ZOO, SEED, fit_model, predict_proba
 from pathsnap import hmm
 
@@ -27,8 +27,8 @@ only = sys.argv[1:] or list(MODEL_ZOO)
 np.random.seed(SEED)
 os.makedirs("artifacts/models", exist_ok=True); os.makedirs("results/figures", exist_ok=True)
 
-tr = pd.read_csv("results/features_train.csv.gz", dtype={"trip": str})
-te = pd.read_csv("results/features_student_test.csv.gz", dtype={"trip": str})
+tr = pd.read_csv("results/features_train.csv", dtype={"trip": str})
+te = pd.read_csv("results/features_student_test.csv", dtype={"trip": str})
 Xtr, ytr, gtr = tr[FEATURES].to_numpy(), tr["label"].to_numpy(), tr["trip"].to_numpy()
 Xte, yte = te[FEATURES].to_numpy(), te["label"].to_numpy()
 
@@ -51,7 +51,8 @@ def route_eval(model):
             obs_arcs, route, _ = fn(ctx, cand, p)
             out[f"{mode}_time_s"] = time.time() - t0
             out[f"{mode}_pointwise_acc"] = pointwise_accuracy(obs_arcs, ref_obs)
-            out[f"{mode}_continuity"] = continuity(obs_arcs, ctx.trip.arcs)
+            out[f"{mode}_observation_continuity"] = continuity(obs_arcs, ctx.trip.arcs)
+            out[f"{mode}_continuity"] = route_continuity(route, ctx.trip.arcs)  # final-route connectivity
             for k, v in route_metrics(route, ctx.trip.route, ctx.trip.arc_len).items():
                 out[f"{mode}_{k}"] = v
         rows.append(out)
@@ -86,6 +87,8 @@ for name in only:
         test_f1=rt["f1"], test_macro_f1=rt["macro_f1"], test_log_loss=rt["log_loss"],
         test_top1=top1_accuracy(te, p_te),
         clf_only_continuity=re.clf_continuity.mean(), hmm_continuity=re.hmm_continuity.mean(),
+        clf_only_observation_continuity=re.clf_observation_continuity.mean(),
+        hmm_observation_continuity=re.hmm_observation_continuity.mean(),
         clf_only_route_f1=re.clf_route_f1.mean(), hmm_route_f1=re.hmm_route_f1.mean(),
         hmm_pointwise_acc=re.hmm_pointwise_acc.mean(),
         fit_time_s=fit_time, inference_ms_per_1k_candidates=1000 * inf_time / len(Xte) * 1000,

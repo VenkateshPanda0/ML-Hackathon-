@@ -11,13 +11,13 @@
     "max_features": "uniform [0.5, 1.0]"
   },
   "best_params": {
-    "learning_rate": 0.012547738685943985,
-    "max_iter": 471,
-    "max_leaf_nodes": 94,
-    "min_samples_leaf": 271,
-    "l2_regularization": 0.0004899262327674505,
-    "max_features": 0.6095135158346369
+    "learning_rate": 0.012565511398413836,
+    "max_iter": 541,
+    "max_leaf_nodes": 59,
+    "min_samples_leaf": 177,
+    "l2_regularization": 0.020385994856245444,
+    "max_features": 0.5398931230929961
   },
-  "best_cv_log_loss": 0.0813842666531857,
-  "search_time_s": 1297.227177619934
+  "best_cv_log_loss": 0.081250143199067,
+  "search_time_s": 1149.9285371303558
 }

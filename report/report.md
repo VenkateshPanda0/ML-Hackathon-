@@ -76,7 +76,7 @@ We checked that every arc endpoint is a valid node index and that consecutive re
 | `log_arc_len` | Short connector arcs behave differently from long road arcs. |
 | `n_cands` | Density of roads around the point. |
 
-Training table: 669,963 candidate rows (17.6% positive). Student test: 75,742 rows (`results/features_*.csv.gz`).
+Training table: 669,963 candidate rows (17.6% positive). Student test: 75,742 rows (`results/features_*.csv`).
 
 # 3. Model experimentation and comparison
 
@@ -89,18 +89,19 @@ Training table: 669,963 candidate rows (17.6% positive). Student test: 75,742 ro
 
 - **Macro F1:** candidate-level, threshold 0.5
 - **Top-1 accuracy:** per GPS observation, whether the highest-scoring candidate is the reference arc
-- **Route continuity:** share of changes in predicted arc between consecutive observations that are physically adjacent
+- **Route continuity (connectivity):** share of consecutive arcs in the final returned route that are physically adjacent (`to_node` of one arc = `from_node` of the next). This is the headline connectivity metric.
+- **Observation-level continuity:** share of changes in predicted arc between consecutive GPS observations that are physically adjacent. Observations can skip short arcs, so this is lower than route continuity; the stitched route fills those gaps with shortest paths.
 
 ## 3.1 Overall comparison
 
-| Model | Family | Key configuration | CV Macro F1 (±std) | CV Top-1 | Student-test Top-1 | Route continuity (clf-only → +HMM) | Student-test Macro F1 | Log loss (CV / test) | Inference time (ms per 1k candidates) | Fit time (s) |
+| Model | Family | Key configuration | CV Macro F1 (±std) | CV Top-1 | Student-test Top-1 | Observation-level continuity (clf-only → +HMM; final-route continuity with HMM is 0.996–0.997 for every model, see `results/model_comparison.csv`) | Student-test Macro F1 | Log loss (CV / test) | Inference time (ms per 1k candidates) | Fit time (s) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| M1 Logistic Regression | Linear | StandardScaler, L2, C=1 | 0.9372 ± 0.0104 | 0.9067 | 0.9155 | 0.727 → 0.865 | 0.9394 | 0.1144 / 0.1122 | 0.09 | 1.2 |
-| M2 Gaussian Naive Bayes | Probabilistic (generative) | var_smoothing=1e-9 | 0.8910 ± 0.0114 | 0.8994 | 0.9100 | 0.699 → 0.851 | 0.8942 | 0.4093 / 0.3959 | 0.16 | 0.2 |
-| M3 KNN | Instance-based | k=25, distance-weighted, scaled, 150k-row subsample | 0.9419 ± 0.0112 | 0.9064 | 0.9208 | 0.737 → 0.873 | 0.9455 | 0.1416 / 0.1304 | 399.0 | 0.2 |
-| M4 Random Forest | Ensemble (bagging) | 150 trees, depth 14, min_leaf 5, max_samples 0.3 | **0.9509** ± 0.0088 | **0.9154** | **0.9274** | 0.748 → 0.878 | **0.9524** | **0.0811 / 0.0779** | 4.24 | 37.5 |
-| M5 HistGradientBoosting | Boosting | lr 0.1, 200 iters, 31 leaves | 0.9502 ± 0.0084 | 0.9146 | 0.9259 | 0.747 → 0.878 | 0.9508 | 0.0832 / 0.0804 | 1.91 | 3.7 |
-| M6 MLP | Neural network | (64, 32) ReLU, Adam, early stopping, 250k-row subsample | 0.9476 ± 0.0096 | 0.9143 | 0.9266 | 0.752 → 0.879 | 0.9505 | 0.0870 / 0.0822 | 0.57 | 17.2 |
+| M1 Logistic Regression | Linear | StandardScaler, L2, C=1 | 0.9372 ± 0.0104 | 0.9067 | 0.9155 | 0.727 → 0.865 | 0.9393 | 0.1144 / 0.1122 | 0.15 | 1.0 |
+| M2 Gaussian Naive Bayes | Probabilistic (generative) | var_smoothing=1e-9 | 0.8910 ± 0.0114 | 0.8994 | 0.9100 | 0.699 → 0.851 | 0.8942 | 0.4093 / 0.3959 | 0.13 | 0.1 |
+| M3 KNN | Instance-based | k=25, distance-weighted, scaled, 150k-row subsample | 0.9419 ± 0.0112 | 0.9064 | 0.9209 | 0.737 → 0.874 | 0.9454 | 0.1417 / 0.1304 | 243.5 | 0.3 |
+| M4 Random Forest | Ensemble (bagging) | 150 trees, depth 14, min_leaf 5, max_samples 0.3 | **0.9509** ± 0.0087 | **0.9154** | **0.9271** | 0.748 → 0.876 | **0.9526** | **0.0812 / 0.0780** | 4.19 | 37.3 |
+| M5 HistGradientBoosting | Boosting | lr 0.1, 200 iters, 31 leaves | 0.9503 ± 0.0082 | 0.9147 | 0.9255 | 0.750 → 0.878 | 0.9510 | 0.0830 / 0.0813 | 1.47 | 4.7 |
+| M6 MLP | Neural network | (64, 32) ReLU, Adam, early stopping, 250k-row subsample | 0.9482 ± 0.0095 | 0.9144 | 0.9267 | 0.756 → 0.873 | 0.9504 | 0.0862 / 0.0821 | 0.44 | 15.5 |
 
 *Source: `results/model_comparison.csv`, `results/cv_folds.csv`, `results/hmm_by_model.csv`. Route continuity and route F1 use the default decoder settings.*
 
@@ -111,11 +112,11 @@ Training table: 669,963 candidate rows (17.6% positive). Student test: 75,742 ro
 ![Train vs CV Macro F1](../results/figures/train_vs_cv.png)
 
 **Model selection.** Random Forest and HistGradientBoosting (HGB) are statistically tied:
-- CV Macro F1 differs by 0.0007, less than one fold standard deviation (≈0.009).
+- CV Macro F1 differs by 0.0006, less than one fold standard deviation (≈0.008 to 0.009).
 - CV log loss differs by 0.002.
 - After HMM decoding, route F1 is identical to three decimals (0.973).
 
-HGB trains about 10× faster (3.7 s vs 37.5 s), runs inference about 2× faster, and its saved model is about 100× smaller (0.4 MB vs 39 MB). That matters for the two-laptop deployment and for repeated Bayesian-optimisation trials. It also has the lowest fold-to-fold variance (std 0.0084). **We selected HGB** for Bayesian optimisation and deployment.
+HGB trains about 8× faster (4.7 s vs 37.3 s), runs inference about 3× faster, and its saved model is about 100× smaller (0.28 MB vs 38 MB). That matters for the two-laptop deployment and for repeated Bayesian-optimisation trials. It also has the lowest fold-to-fold variance (std 0.0082). **We selected HGB** for Bayesian optimisation and deployment.
 
 ## 3.2 Per-model questions
 
@@ -124,7 +125,7 @@ Answers for each model: A = suitability and strengths/limitations, B = hyperpara
 ### M1 - Logistic Regression
 - **A.** A linear baseline that gives calibrated probabilities, which is a natural fit for HMM emissions. Its weakness is that it cannot model interactions, for example "small distance matters less when heading disagrees".
 - **B.** Inputs standardised; L2 penalty with C=1.0; lbfgs solver with max_iter=1000. Objective: binary cross-entropy (log loss).
-- **C.** Student test: Top-1 0.9155, Macro F1 0.9394, log loss 0.1122. Train Macro F1 0.9383 vs CV 0.9372 shows no overfitting. It is about 0.013 below the tree ensembles, a mild underfit from its linear decision boundary. After HMM decoding its route F1 (0.9731) almost matches the best model, because the decoder fixes most of the ranking errors.
+- **C.** Student test: Top-1 0.9155, Macro F1 0.9393, log loss 0.1122. Train Macro F1 0.9383 vs CV 0.9372 shows no overfitting. It is about 0.013 below the tree ensembles, a mild underfit from its linear decision boundary. After HMM decoding its route F1 (0.9731) almost matches the best model, because the decoder fixes most of the ranking errors.
 
 ### M2 - Gaussian Naive Bayes
 - **A.** A fast generative baseline. Its feature-independence assumption is badly violated here: `dist`, `dist_rank`, `gap_to_nearest` and `dist_ratio` are strongly correlated.
@@ -134,22 +135,22 @@ Answers for each model: A = suitability and strengths/limitations, B = hyperpara
 ### M3 - K-Nearest Neighbours
 - **A.** Candidates with similar geometry (distance, heading, rank) should share labels. Its limitations are that it needs scaling, has costly inference, and gives coarse probabilities.
 - **B.** k=25, distance-weighted, Euclidean on standardised features, trained on a 150k-row random subsample to keep queries tractable. There is no explicit loss: it is a lazy learner.
-- **C.** Student test: Top-1 0.9208, Macro F1 0.9455, log loss 0.1304. Train Macro F1 0.9575 vs CV 0.9419 is the largest train-CV gap, consistent with distance weighting memorising training points. Inference is the slowest by far (399 ms per 1k candidates), which rules it out for the API.
+- **C.** Student test: Top-1 0.9209, Macro F1 0.9454, log loss 0.1304. Train Macro F1 0.9575 vs CV 0.9419 is the largest train-CV gap, consistent with distance weighting memorising training points. Inference is the slowest by far (244 ms per 1k candidates), which rules it out for the API.
 
 ### M4 - Random Forest
 - **A.** Captures non-linear interactions between distance, heading and junction position, and bagging keeps variance low. Its limitations are model size and fit time.
 - **B.** 150 trees, max_depth=14, min_samples_leaf=5, max_samples=0.3. Objective: Gini impurity per split.
-- **C.** Student test: Top-1 0.9274, Macro F1 0.9524, log loss 0.0779, the best classifier-only numbers. The train-CV gap (0.9575 vs 0.9509) shows mild overfitting, controlled by depth and leaf limits. Test is not worse than CV. It was not selected because of cost (see 3.1).
+- **C.** Student test: Top-1 0.9271, Macro F1 0.9526, log loss 0.0780, the best classifier-only numbers. The train-CV gap (0.9575 vs 0.9509) shows mild overfitting, controlled by depth and leaf limits. Test is not worse than CV. It was not selected because of cost (see 3.1).
 
 ### M5 - HistGradientBoosting (selected)
 - **A.** Boosting on histogram-binned features fixes the residual errors of earlier trees and handles the mixed-scale features without scaling. It is fast and compact. Its limitation is sensitivity to learning rate and tree size, which is why it was tuned.
 - **B.** Initial values: learning_rate=0.1, max_iter=200, max_leaf_nodes=31, min_samples_leaf=20, no L2. Objective: binary log loss.
-- **C.** Student test: Top-1 0.9259, Macro F1 0.9508, log loss 0.0804. Train 0.9537 vs CV 0.9502 is a small gap, with no meaningful over- or under-fitting. It has the lowest fold standard deviation of all models.
+- **C.** Student test: Top-1 0.9255, Macro F1 0.9510, log loss 0.0813. Train 0.9535 vs CV 0.9503 is a small gap, with no meaningful over- or under-fitting. It has the lowest fold standard deviation of all models.
 
 ### M6 - Multi-layer Perceptron
 - **A.** Learns smooth non-linear feature combinations. Its limitations are that it needs scaling, is sensitive to initialisation, and trains more slowly on CPU.
 - **B.** Hidden layers (64, 32), ReLU, Adam, alpha=1e-4, early stopping on a 10% validation split, max 60 epochs, 250k-row subsample. Objective: log loss.
-- **C.** Student test: Top-1 0.9266, Macro F1 0.9505, log loss 0.0822. Train 0.9517 vs CV 0.9476 shows no overfitting; early stopping halted training. Its epoch-wise loss curve is stored in the fitted object (`artifacts/models/MLP.joblib`, attribute `loss_curve_`). We did not plot it separately.
+- **C.** Student test: Top-1 0.9267, Macro F1 0.9504, log loss 0.0821. Train 0.9514 vs CV 0.9482 shows no overfitting; early stopping halted training. Its epoch-wise loss curve is stored in the fitted object (`artifacts/models/MLP.joblib`, attribute `loss_curve_`). We did not plot it separately.
 
 ![Confusion matrices on the student-test partition (threshold 0.5)](../results/figures/confusion_HistGradientBoosting.png){width=40%}
 
@@ -157,7 +158,7 @@ Confusion matrices for all six models are in `results/figures/confusion_<model>.
 
 # 4. Bayesian hyperparameter optimisation (HistGradientBoosting)
 
-*Code: `scripts/04_bayes_opt.py`. Trial record: `results/bayes_opt_trials.csv`. Best configuration: `results/bayes_opt_best.json`. Log: `results/logs/bayes_opt.log`.*
+*Code: `scripts/04_bayes_opt.py`. Trial record: `results/bayes_opt_trials.csv`. Best configuration: `results/bayes_opt_best.json`. Log: `results/logs/bayes_opt_console.log`.*
 
 1. **Hyperparameters searched:** learning_rate, max_iter, max_leaf_nodes, min_samples_leaf, l2_regularization, max_features.
 2. **Ranges:**
@@ -169,27 +170,27 @@ Confusion matrices for all six models are in `results/figures/confusion_<model>.
    - l2_regularization: log-uniform [1e-4, 10]
    - max_features: uniform [0.5, 1.0]
 3. **Objective:** minimise mean log loss over 3-fold GroupKFold (groups = trip) on the 80 training trips. The sampler is Optuna TPE (seed 42), and the untuned configuration was enqueued as trial 0.
-4. **Trials:** 30, taking 1,297 s in total.
+4. **Trials:** 30, taking 1,150 s in total.
 5. **Best configuration:**
 
-   - learning_rate 0.0125
-   - max_iter 471
-   - max_leaf_nodes 94
-   - min_samples_leaf 271
-   - l2_regularization 4.9e-4
-   - max_features 0.61
+   - learning_rate 0.0126
+   - max_iter 541
+   - max_leaf_nodes 59
+   - min_samples_leaf 177
+   - l2_regularization 0.0204
+   - max_features 0.54
 
-   Best CV log loss: 0.08138, vs 0.08394 for trial 0.
+   Best CV log loss: 0.08125, vs 0.08312 for trial 0.
 6. **Did tuning help?** Yes, consistently but modestly:
 
 | | CV log loss | CV Macro F1 | CV Top-1 | Test Top-1 | Test Macro F1 | Test log loss | HMM route F1 | Fit time (s) | Inference, 75.7k test candidates (s) |
 |---|---|---|---|---|---|---|---|---|---|
-| HGB untuned | 0.0835 | 0.9491 | 0.9150 | 0.9259 | 0.9508 | 0.0804 | 0.9732 | 3.4 | 0.10 |
-| HGB tuned | **0.0814** | **0.9500** | **0.9160** | **0.9294** | **0.9529** | **0.0771** | **0.9741** | 22.5 | 0.70 |
+| HGB untuned | 0.0836 | 0.9492 | 0.9152 | 0.9255 | 0.9510 | 0.0813 | 0.9732 | 1.7 | 0.03 |
+| HGB tuned | **0.0813** | **0.9501** | **0.9159** | **0.9282** | **0.9520** | **0.0774** | **0.9733** | 12.5 | 0.30 |
 
 *Source: `results/tuned_vs_untuned.csv`. Both models were evaluated on identical partitions with the default decoder.*
 
-The search favoured many shallow-learning-rate iterations with large minimum leaf sizes and feature subsampling, which are regularising choices. The cost is about 7× slower inference. That is still only 0.7 s for the whole student-test set, so we kept the tuned model.
+The search favoured many shallow-learning-rate iterations with large minimum leaf sizes and feature subsampling, which are regularising choices. The cost is about 9× slower inference. That is still only 0.3 s for the whole student-test set, so we kept the tuned model. The gain after HMM decoding is negligible (route F1 0.9732 to 0.9733); the improvement is in candidate-level probability quality (test log loss 0.0813 to 0.0774).
 
 ![Optimisation history and hyperparameter importance](../results/figures/bayes_opt_history.png)
 
@@ -214,14 +215,16 @@ The search favoured many shallow-learning-rate iterations with large minimum lea
    - Short closed loops (≤1.5 km) created at junctions are removed.
 6. **Decoding.** The Viterbi recurrence is δ_t(j) = max_i [δ_{t−1}(i) + log A_ij] + w·log e_t(j), with back-pointers and a backtrack from argmax δ_T.
 
-**Decoder tuning.** We used out-of-fold (5-fold GroupKFold) probabilities on 25 training trips, so the decoder never saw in-sample probabilities. A grid search covered β ∈ {5, 10, 20}, w ∈ {0.5, 1, 2} and jump ∈ {20, 40}, with mean route F1 as the objective (`results/decoder_grid.csv`). Chosen: β = 10, w = 0.5, jump = 20. The grid was flat: all 18 settings scored between 0.939 and 0.943 OOF route F1, so the decoder is robust to these settings.
+**Decoder tuning.** We used out-of-fold (5-fold GroupKFold) probabilities on 25 training trips, so the decoder never saw in-sample probabilities. A grid search covered β ∈ {5, 10, 20}, w ∈ {0.5, 1, 2} and jump ∈ {20, 40}, with mean route F1 as the objective (`results/decoder_grid.csv`). Chosen: β = 10, w = 0.5, jump = 20. The grid was flat: all 18 settings scored between 0.939 and 0.944 OOF route F1, so the decoder is robust to these settings.
 
 **Classifier-only vs classifier + HMM (student test, tuned HGB, tuned decoder)**
 
-| | Observation-level accuracy | Continuity | Route precision | Route recall | Route F1 | Route mismatch fraction | Decode time per trip (s) |
-|---|---|---|---|---|---|---|---|
-| Classifier only (top-1 per observation, then shortest-path join) | 0.9264 | 0.7457 | 0.8961 | 0.9572 | 0.9239 | 0.1644 | 0.09 |
-| Classifier + HMM / Viterbi | **0.9608** | **0.8807** | **0.9844** | **0.9643** | **0.9739** | **0.0509** | 0.28 |
+| | Observation-level accuracy | Route continuity (final route) | Observation-level continuity | Route precision | Route recall | Route F1 | Route mismatch fraction | Decode time per trip (s) |
+|---|---|---|---|---|---|---|---|---|
+| Classifier only (top-1 per observation, then shortest-path join) | 0.9248 | 0.9496 | 0.7481 | 0.8934 | 0.9567 | 0.9222 | 0.1686 | 0.19 |
+| Classifier + HMM / Viterbi | **0.9613** | **0.9971** | **0.8818** | **0.9844** | **0.9643** | **0.9739** | **0.0509** | 0.92 |
+
+*Rerun locally; source `results/hmm_vs_classifier_summary.csv`.*
 
 *Source: `results/hmm_vs_classifier_summary.csv`, `results/hmm_vs_classifier_by_trip.csv`. Route precision, recall and F1 are weighted by arc length. Mismatch fraction = (wrongly added + wrongly missing length) / reference length.*
 
@@ -229,15 +232,15 @@ The search favoured many shallow-learning-rate iterations with large minimum lea
 
 **Did HMM decoding improve the route?** Yes.
 
-- Route F1 improved on 9 of 10 trips and was unchanged on the 10th: mean 0.924 → 0.974, and the mismatch fraction dropped by about 3×.
-- The biggest gain is precision (0.896 → 0.984). Classifier-only routes zig-zag between parallel or opposite-direction arcs, and the connecting paths add wrong road length. The HMM refuses moves whose network distance does not match the GPS displacement.
+- Route F1 improved on 9 of 10 trips and was unchanged on the 10th: mean 0.922 → 0.974, and the mismatch fraction dropped by about 3× (0.169 → 0.051).
+- The biggest gain is precision (0.893 → 0.984). Classifier-only routes zig-zag between parallel or opposite-direction arcs, and the connecting paths add wrong road length. The HMM refuses moves whose network distance does not match the GPS displacement.
 
 **Where the HMM did not help:**
 
-- Trips 00000007 (0.996 → 0.996) and 00000077 (0.955 → 0.956): the classifier was already right, or the remaining errors are close parallel roads where both hypotheses are geometrically consistent.
+- Trips 00000007 (0.996 → 0.996) and 00000077 (0.952 → 0.956): the classifier was already right, or the remaining errors are close parallel roads where both hypotheses are geometrically consistent.
 - Trip 00000065 is the weakest result (0.889). Its route recall stays low because the GPS cuts across a junction area where the reference takes arcs the observations never come near.
 - **Exact route match is 0 for both methods.** A single missing short connector arc breaks exactness, so we report it but do not optimise for it.
-- **Continuity below 1 even with the HMM.** Observations 10 m apart can skip a very short arc, which counts as non-adjacent. The final assembled route fills these gaps with shortest paths.
+- **Continuity below 1 even with the HMM.** Observation-level continuity is 0.882 because observations 10 m apart can skip a very short arc, which counts as non-adjacent. The final assembled route fills these gaps with shortest paths and reaches route continuity 0.997. The lowest trip is 00000065 at 0.984; the remaining gaps are places where no connecting path was found within the stitch bound, so the assembler leaves a gap rather than inventing a long detour.
 
 ![Student-test trip 00000091: classifier-only (left) vs HMM (right). Green = reference, red = predicted, blue = GPS](../results/figures/route_00000091.png)
 

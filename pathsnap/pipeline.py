@@ -8,7 +8,7 @@ import joblib
 from . import hmm
 from .features import FEATURES, TripContext, build_candidates
 from .io import load_trip
-from .metrics import continuity, pointwise_accuracy, route_metrics
+from .metrics import continuity, pointwise_accuracy, route_continuity, route_metrics
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -36,7 +36,10 @@ def evaluate_against_reference(pred, trip_folder):
     ref_trip = load_trip(trip_folder, with_route=True)
     ctx = pred["ctx"]
     m = route_metrics(pred["route"], ref_trip.route, ctx.trip.arc_len)
-    m["continuity"] = continuity(pred["obs_arcs"], ctx.trip.arcs)
+    # route connectivity of the FINAL returned route (consecutive arcs share a node)
+    m["continuity"] = route_continuity(pred["route"], ctx.trip.arcs)
+    # older observation-level measure (raw per-GPS-point picks), kept for comparison
+    m["observation_continuity"] = continuity(pred["obs_arcs"], ctx.trip.arcs)
     # observation-level accuracy vs. the reference arc each observation aligns to
     ctx.trip.route = ref_trip.route
     from .features import reference_labels
