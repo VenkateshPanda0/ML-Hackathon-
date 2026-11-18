@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PathSnap - Evaluator UI</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; display: flex; height: 100vh; color: #1d2733; }
+  #side { width: 340px; padding: 18px; box-sizing: border-box; background: #f4f6f9; overflow-y: auto; }
+  #map { flex: 1; }
+  h1 { font-size: 22px; margin: 0 0 4px; } .sub { color: #5b6b7c; font-size: 13px; margin-bottom: 16px; }
+  label { font-size: 12px; font-weight: 600; display: block; margin: 12px 0 4px; }
+  input, select, button { width: 100%; padding: 8px; font-size: 14px; box-sizing: border-box; border-radius: 6px; border: 1px solid #c3ccd6; }
+  button { background: #1f6feb; color: white; border: none; margin-top: 12px; cursor: pointer; font-weight: 600; }
+  button:disabled { background: #8aa8d8; }
+  .trips { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
+  .trips button { margin: 0; background: white; color: #1d2733; border: 1px solid #c3ccd6; font-weight: 500; }
+  .trips button.sel { background: #1f6feb; color: white; }
+  table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; }
+  td { padding: 5px 4px; border-bottom: 1px solid #dde3ea; } td:last-child { text-align: right; font-weight: 600; }
+  #status { font-size: 13px; margin-top: 10px; min-height: 18px; } .err { color: #c62828; }
+  .legend { font-size: 12px; margin-top: 14px; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div id="side">
+  <h1>PathSnap</h1>
+  <div class="sub">GPS map-matching &amp; route reconstruction</div>
+  <label>API address (Laptop 1)</label>
+  <input id="api" value="http://localhost:8000">
+  <button id="connect">Load evaluation trips</button>
+  <label>Evaluation trips</label>
+  <div class="trips" id="trips"></div>
+  <button id="run" disabled>Reconstruct route</button>
+  <div id="status"></div>
+  <table id="metrics"></table>
+  <div class="legend"><span style="color:#1f77b4">&#9679;</span> GPS observations<br>
+    <span style="color:#d62728">&#9644;</span> Predicted route</div>
+</div>
+<div id="map"></div>
+<script>
+const map = L.map('map').setView([55.75, 37.62], 11);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {attribution: '&copy; OpenStreetMap contributors'}).addTo(map);
+let layers = L.layerGroup().addTo(map), selected = null;
+const $ = id => document.getElementById(id);
+const api = () => $('api').value.replace(/\/$/, '');
+const status = (t, err) => { $('status').textContent = t; $('status').className = err ? 'err' : ''; };
+
+$('connect').onclick = async () => {
+  try {
+    status('Connecting...');
+    const r = await fetch(api() + '/trips'); const d = await r.json();
+    $('trips').innerHTML = '';
+    d.trips.forEach(id => {
+      const b = document.createElement('button'); b.textContent = id;
+      b.onclick = () => { selected = id; document.querySelectorAll('.trips button').forEach(x => x.classList.remove('sel'));
+                          b.classList.add('sel'); $('run').disabled = false; };
+      $('trips').appendChild(b);
+    });
+    status(d.trips.length + ' trips available');
+  } catch (e) { status('Cannot reach API: ' + e, true); }
+};
+
+const LABELS = {route_precision: 'Route precision (length)', route_recall: 'Route recall (length)',
+  route_f1: 'Route F1 (length)', route_mismatch: 'Route mismatch fraction', exact_match: 'Exact route match',
+  continuity: 'Route continuity', pointwise_accuracy: 'Observation-level accuracy'};
+
+$('run').onclick = async () => {
+  $('run').disabled = true; status('Running prediction for trip ' + selected + '...');
+  try {
+    const r = await fetch(api() + '/predict', {method: 'POST', headers: {'Content-Type': 'application/json'},
+                                                body: JSON.stringify({trip_id: selected})});
+    if (!r.ok) throw new Error(await r.text());
+    const d = await r.json();
+    layers.clearLayers();
+    d.gps_points.forEach(p => L.circleMarker(p, {radius: 2, color: '#1f77b4', weight: 0, fillOpacity: 0.8}).addTo(layers));
+    L.polyline(d.predicted_route_segments, {color: '#d62728', weight: 4}).addTo(layers);
+    map.fitBounds(L.latLngBounds(d.gps_points));
+    let rows = `<tr><td>Trip</td><td>${d.trip_id}</td></tr><tr><td>GPS observations used</td><td>${d.observations}</td></tr>
+                <tr><td>Predicted route arcs</td><td>${d.predicted_route_arcs.length}</td></tr>
+                <tr><td>Inference time</td><td>${d.inference_seconds}s</td></tr>`;
+    for (const [k, v] of Object.entries(d.metrics)) rows += `<tr><td>${LABELS[k] || k}</td><td>${v}</td></tr>`;
+    $('metrics').innerHTML = rows; status('Done.');
+  } catch (e) { status('Error: ' + e.message, true); }
+  $('run').disabled = false;
+};
+</script>
+</body>
+</html>

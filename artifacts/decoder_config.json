@@ -1,0 +1,20 @@
+{
+  "decoder": {
+    "beta": 10.0,
+    "emission_weight": 0.5,
+    "route_factor": 4.0,
+    "route_slack": 300.0,
+    "backtrack_tol": 30.0,
+    "jump_penalty": 20.0,
+    "stitch_factor": 3.0,
+    "stitch_slack": 500.0,
+    "max_loop_len": 1500.0
+  },
+  "candidates": {
+    "min_dist": 10.0,
+    "radius": 50.0,
+    "k_max": 8
+  },
+  "tuned_on": "25 training trips, out-of-fold probabilities",
+  "objective": "mean route F1"
+}
