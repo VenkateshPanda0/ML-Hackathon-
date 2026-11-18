@@ -33,7 +33,7 @@ plt.suptitle(""); fig.tight_layout(); fig.savefig("results/figures/model_stabili
 
 fig, ax = plt.subplots(figsize=(7, 4))
 ax.bar(x - w / 2, S.clf_only_continuity, w, label="classifier only"); ax.bar(x + w / 2, S.hmm_continuity, w, label="classifier + HMM")
-ax.set_xticks(x, order, rotation=25); ax.set_ylim(0, 1); ax.legend(); ax.set_title("Route continuity on student test")
+ax.set_xticks(x, order, rotation=25); ax.set_ylim(0, 1.15); ax.legend(loc="upper center", ncol=2); ax.set_title("Route continuity on student test")
 fig.tight_layout(); fig.savefig("results/figures/continuity_by_model.png", dpi=130); plt.close(fig)
 
 # train vs CV gap (overfitting check)

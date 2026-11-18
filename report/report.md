@@ -54,7 +54,7 @@ We checked that every arc endpoint is a valid node index and that consecutive re
 
 **Folium map (required).** The interactive maps are `results/maps/train_00000039_eda.html` and `results/maps/student_test_<trip>.html`. They have layers for GPS observations, the nearby road network, the reference route and the predicted route, plus a legend and a layer control.
 
-> **[INSERT SCREENSHOT]** Open `results/maps/student_test_00000091.html` in a browser and paste a screenshot here.
+![Interactive Folium map of student-test trip 00000091 (`results/maps/student_test_00000091.html`)](screenshots/map_student_test_00000091.png)
 
 ## 2.3 Pre-processing
 
@@ -254,9 +254,9 @@ The search favoured many shallow-learning-rate iterations with large minimum lea
 - A legend that includes the trip's route F1
 - Automatic zoom to the trajectory
 
-> **[INSERT SCREENSHOT]** `results/maps/student_test_00000091.html`
+![Student-test trip 00000091 (`results/maps/student_test_00000091.html`): GPS observations (blue), reference route (green) and predicted route (red), route F1 0.994](screenshots/map_student_test_00000091.png)
 
-> **[INSERT SCREENSHOT]** `results/maps/student_test_00000065.html`
+![Student-test trip 00000065, the weakest trip (`results/maps/student_test_00000065.html`), route F1 0.889](screenshots/map_student_test_00000065.png)
 
 # 7. API, UI and deployment
 
@@ -268,9 +268,9 @@ The search favoured many shallow-learning-rate iterations with large minimum lea
 - **Laptop 2 (UI).** `ui/index.html`, served with `python -m http.server 8080`. The evaluator enters the API address, sees the ten trips as buttons, picks one, and the UI shows the GPS points, predicted route and metrics on a Leaflet map. The UI never receives the reference route geometry.
 - **Smoke test.** On the student-test trips, `/predict` returned in about 0.4–1.1 s per trip.
 
-> **[INSERT SCREENSHOT]** UI on Laptop 2 after selecting a trip.
+![UI on Laptop 2 after reconstructing evaluator trip 00000015: GPS points (blue), predicted route (red) and metrics (route F1 0.9962)](screenshots/ui_laptop2.jpg)
 
-> **[INSERT SCREENSHOT]** API terminal on Laptop 1 showing the `PREDICT`/`RESULT` log lines and `POST /predict ... 200`.
+![API terminal on Laptop 1 during a test run on evaluator trip 00000015: `PREDICT` (candidate generation, classifier, HMM/Viterbi), `RESULT` (route F1 0.9962, route continuity 1.0000, 3.57 s) and `POST /predict ... 200`](screenshots/api_terminal_laptop1.png)
 
 # 8. Limitations, integrity and AI-use disclosure
 
