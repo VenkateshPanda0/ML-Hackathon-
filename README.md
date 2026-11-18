@@ -32,6 +32,8 @@ PathSnap takes noisy GPS observations plus the road network of a trip and recons
 
 Python 3.11+ (scikit-learn is pinned to the version the saved models were trained with).
 
+The two feature tables (`results/features_train.csv` and `results/features_student_test.csv`) are stored with [Git LFS](https://git-lfs.com). Install Git LFS and run `git lfs install` before cloning, or run `git lfs pull` after cloning. Without it those two files are tiny pointer files and scripts 03 to 05 will fail on them. You can also rebuild them with `python scripts/02_build_features.py train` and `python scripts/02_build_features.py student_test`.
+
 ```bash
 git clone https://github.com/VenkateshPanda0/ML-Hackathon-.git
 cd ML-Hackathon-
