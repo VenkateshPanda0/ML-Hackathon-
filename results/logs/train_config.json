@@ -1,0 +1,26 @@
+{
+  "seed": 42,
+  "cv": "GroupKFold(5) by trip",
+  "features": [
+    "dist",
+    "dist_rank",
+    "gap_to_nearest",
+    "dist_ratio",
+    "cos_heading",
+    "abs_heading_diff",
+    "moving",
+    "speed",
+    "end_frac",
+    "log_arc_len",
+    "n_cands",
+    "is_nearest"
+  ],
+  "models": {
+    "LogisticRegression": "StandardScaler, L2, C=1.0",
+    "GaussianNB": "var_smoothing=1e-9",
+    "KNN": "StandardScaler, k=25, distance-weighted, 150k-row subsample",
+    "RandomForest": "150 trees, max_depth=14, min_leaf=5, max_samples=0.3",
+    "HistGradientBoosting": "lr=0.1, 200 iters, 31 leaves",
+    "MLP": "StandardScaler, (64,32) ReLU, Adam, early stopping, 250k-row subsample"
+  }
+}
